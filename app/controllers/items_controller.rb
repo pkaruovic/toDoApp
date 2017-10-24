@@ -1,4 +1,5 @@
 class ItemsController < ApplicationController
+	before_action :get_item, only: [:update, :destroy]
 
 	def index
 		@items = Item.all
@@ -15,7 +16,6 @@ class ItemsController < ApplicationController
 	end
 
 	def update
-		@item = Item.find(params[:id])
 		if @item.update_attributes(user_params)
 			flash.now[:success] = "Your task is updated"
 		else
@@ -24,7 +24,7 @@ class ItemsController < ApplicationController
 	end
 
 	def destroy
-		Item.find(params[:id]).destroy
+		@item.destroy
 		flash.now[:success] = "Task is deleted"
 	end
 
@@ -32,5 +32,9 @@ class ItemsController < ApplicationController
 
 	def user_params
 		params.require(:item).permit(:id, :text, :finished)
+	end
+
+	def get_item
+		@item = Item.find(params[:id])
 	end
 end
